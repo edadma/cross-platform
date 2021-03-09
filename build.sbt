@@ -1,7 +1,7 @@
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file(".")).
   settings(
     name := "cross-platform",
-    version := "0.1.0-snapshot.2",
+    version := "0.1.0-snapshot.3",
     scalaVersion := "2.13.5",
     scalacOptions ++=
       Seq(

@@ -3,7 +3,7 @@ package xyz.hyperreal
 import scala.scalajs.js
 import js.Dynamic.{global => g}
 
-package object cross_plateform {
+package object cross_platform {
 
   def processArgs(a: Array[String]): Seq[String] = g.process.argv.asInstanceOf[js.Array[String]] drop 2 toList
 

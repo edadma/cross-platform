@@ -3,7 +3,7 @@ package xyz.hyperreal
 import java.io.FileWriter
 import java.nio.file.{Files, Paths}
 
-package object cross_plateform {
+package object cross_platform {
 
   def processArgs(a: Array[String]): Seq[String] = a
 

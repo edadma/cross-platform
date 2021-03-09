@@ -2,7 +2,7 @@ package xyz.hyperreal
 
 import java.nio.file.{Files, Paths, FileSystems}
 
-package object cross_plateform {
+package object cross_platform {
 
   def processArgs(a: Array[String]): Seq[String] = a
 
