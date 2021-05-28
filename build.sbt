@@ -1,8 +1,10 @@
+ThisBuild / versionScheme := Some("semver-spec")
+
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file(".")).
   settings(
     name := "cross-platform",
-    version := "0.1.0-snapshot.3",
-    scalaVersion := "2.13.5",
+    version := "0.1.0",
+    scalaVersion := "2.13.6",
     scalacOptions ++=
       Seq(
         "-deprecation", "-feature", "-unchecked",
@@ -10,10 +12,21 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
         "-Xasync"
       ),
     organization := "xyz.hyperreal",
+//    publishTo := Some(
+//      "Artifactory Realm" at "https://hyperreal.jfrog.io/artifactory/default-maven-virtual"
+//    ),
+//    credentials += Credentials(
+//      "Artifactory Realm",
+//      "hyperreal.jfrog.io",
+//      "edadma@gmail.com",
+//      "fW6N-hDhW*XPXhMt"
+//    ),
+    githubOwner := "edadma",
+    githubRepository := "cross-platform",
     mainClass := Some("xyz.hyperreal.cross_platform.Main"),
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.5" % "test",
     publishMavenStyle := true,
-    publishArtifact in Test := false,
+    Test / publishArtifact := false,
     licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
   ).
   jvmSettings(
