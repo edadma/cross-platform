@@ -1,4 +1,4 @@
-package xyz.hyperreal
+package io.github.edadma
 
 import java.io.FileWriter
 import java.nio.file.{Files, Paths}
@@ -9,7 +9,7 @@ package object cross_platform {
 
   def nameSeparator: String = System.getProperty("file.separator")
 
-  def readFile(file: String): String = util.Using(io.Source.fromFile(file))(_.mkString).get
+  def readFile(file: String): String = util.Using(scala.io.Source.fromFile(file))(_.mkString).get
 
   def writeFile(file: String, data: String): Unit = {
     val f = new FileWriter(file)

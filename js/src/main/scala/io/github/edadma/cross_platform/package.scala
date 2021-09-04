@@ -1,4 +1,4 @@
-package xyz.hyperreal
+package io.github.edadma
 
 import scala.scalajs.js
 import js.Dynamic.{global => g}
