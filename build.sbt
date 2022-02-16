@@ -4,8 +4,8 @@ ThisBuild / versionScheme := Some("semver-spec")
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file(".")).
   settings(
     name := "cross-platform",
-    version := "0.1.1",
-    scalaVersion := "2.13.6",
+    version := "0.1.2",
+    scalaVersion := "2.13.8",
     scalacOptions ++=
       Seq(
         "-deprecation", "-feature", "-unchecked",
@@ -20,7 +20,7 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
     licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
   ).
   jvmSettings(
-    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.0.0" % "provided",
+    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.1.0" % "provided",
   ).
   nativeSettings(
     nativeLinkStubs := true
