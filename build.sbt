@@ -4,7 +4,7 @@ ThisBuild / versionScheme := Some("semver-spec")
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file(".")).
   settings(
     name := "cross-platform",
-    version := "0.1.6",
+    version := "0.0.1",
     scalaVersion := "3.5.0",
     scalacOptions ++=
       Seq(
