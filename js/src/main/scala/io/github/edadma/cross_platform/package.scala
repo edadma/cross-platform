@@ -3,7 +3,7 @@ package io.github.edadma.cross_platform
 import scala.scalajs.js
 import js.Dynamic.{global => g}
 
-def processArgs(a: Array[String]): IndexedSeq[String] =
+def processArgs(a: Seq[String]): IndexedSeq[String] =
   g.process.argv.asInstanceOf[js.Array[String]] drop 2 toIndexedSeq
 
 private val fs   = g.require("fs")

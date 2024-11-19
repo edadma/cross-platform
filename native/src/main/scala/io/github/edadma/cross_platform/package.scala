@@ -3,7 +3,7 @@ package io.github.edadma.cross_platform
 import java.io.FileWriter
 import java.nio.file.{Files, Paths}
 
-def processArgs(a: Array[String]): IndexedSeq[String] = a.toIndexedSeq
+def processArgs(a: Seq[String]): IndexedSeq[String] = a.toIndexedSeq
 
 def nameSeparator: String = System.getProperty("file.separator")
 
