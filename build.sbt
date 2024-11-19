@@ -17,7 +17,6 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
         "-language:implicitConversions",
         "-language:existentials",
         "-language:dynamics",
-        "-Xasync",
       ),
     organization           := "io.github.edadma",
     githubOwner            := "edadma",
