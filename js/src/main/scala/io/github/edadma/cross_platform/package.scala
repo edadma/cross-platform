@@ -1,6 +1,8 @@
 package io.github.edadma.cross_platform
 
 import scala.scalajs.js
+import scala.scalajs.js.DynamicImplicits.*
+
 import js.Dynamic.{global => g}
 
 def processArgs(a: Seq[String]): IndexedSeq[String] =
@@ -25,9 +27,26 @@ def readableFile(file: String): Boolean =
 
 def writableFile(file: String): Boolean =
   try {
-    writeFile(file, "")
     fs.accessSync(file, fs.constants.W_OK)
     true
   } catch {
     case _: Exception => false
   }
+
+def listFiles(directory: String): Seq[String] = {
+  if (js.Dynamic.global.require != js.undefined) {
+    val dirPath = path.resolve(directory)
+
+    if (fs.existsSync(dirPath)) {
+      fs.readdirSync(dirPath)
+        .asInstanceOf[js.Array[String]]
+        .map(file => path.resolve(dirPath, file).toString)
+        .sort()
+        .toList
+    } else {
+      throw new IllegalArgumentException(s"$directory is not a directory or does not exist")
+    }
+  } else {
+    throw new UnsupportedOperationException("File system access is only available in Node.js")
+  }
+}
