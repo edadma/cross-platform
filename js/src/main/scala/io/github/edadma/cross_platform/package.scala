@@ -51,4 +51,4 @@ def listFiles(directory: String): Seq[String] = {
   }
 }
 
-def stdout(s: String): Unit = js.Dynamic.global.process.stdout(s)
+def stdout(s: String): Unit = js.Dynamic.global.process.stdout.write(s)
