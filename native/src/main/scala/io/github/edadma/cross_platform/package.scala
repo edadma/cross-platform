@@ -46,3 +46,5 @@ def listFiles(directory: String): Seq[String] = {
 }
 
 def stdout(s: String): Unit = print(s)
+
+def processExit(code: Int): Nothing = sys.exit(code)

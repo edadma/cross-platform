@@ -8,8 +8,9 @@ import js.Dynamic.{global => g}
 def processArgs(a: Seq[String]): IndexedSeq[String] =
   g.process.argv.asInstanceOf[js.Array[String]] drop 2 toIndexedSeq
 
-private val fs   = g.require("fs")
-private val path = g.require("path")
+private val fs      = g.require("fs")
+private val path    = g.require("path")
+private val process = js.Dynamic.global.process
 
 def nameSeparator: String = path.sep.toString
 
@@ -51,4 +52,8 @@ def listFiles(directory: String): Seq[String] = {
   }
 }
 
-def stdout(s: String): Unit = js.Dynamic.global.process.stdout.write(s)
+def stdout(s: String): Unit = process.stdout.write(s)
+
+def processExit(code: Int): Nothing =
+  process.exit(code)
+  throw new RuntimeException("Unreachable code after process.exit")
