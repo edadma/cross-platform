@@ -44,3 +44,5 @@ def listFiles(directory: String): Seq[String] = {
     throw new IllegalArgumentException(s"$directory is not a directory or does not exist")
   }
 }
+
+def stdout(s: String): Unit = print(s)

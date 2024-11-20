@@ -50,3 +50,5 @@ def listFiles(directory: String): Seq[String] = {
     throw new UnsupportedOperationException("File system access is only available in Node.js")
   }
 }
+
+def stdout(s: String): Unit = js.Dynamic.global.process.stdout(s)
