@@ -26,14 +26,6 @@ def readableFile(file: String): Boolean =
     case _: Exception => false
   }
 
-def writableFile(file: String): Boolean =
-  try {
-    fs.accessSync(file, fs.constants.W_OK)
-    true
-  } catch {
-    case _: Exception => false
-  }
-
 def listFiles(directory: String): Seq[String] = {
   if (js.Dynamic.global.require != js.undefined) {
     val dirPath = path.resolve(directory)
