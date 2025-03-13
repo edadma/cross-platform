@@ -47,7 +47,10 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-feature",
     "-unchecked",
-    "-Xfatal-warnings",
+    "-language:postfixOps",
+    "-language:implicitConversions",
+    "-language:existentials",
+    "-language:dynamics",
   ),
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
   //  scalaJSLinkerConfig ~= { _.withModuleSplitStyle(ModuleSplitStyle.SmallestModules) },
@@ -55,6 +58,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file("."))
+  .settings(commonSettings)
   .settings(
     name         := "cross-platform",
     publishMavenStyle      := true,
