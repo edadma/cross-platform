@@ -1,5 +1,5 @@
-ThisBuild / licenses += "ISC" -> url("https://opensource.org/licenses/ISC")
-ThisBuild / versionScheme     := Some("semver-spec")
+ThisBuild / licenses += "ISC"  -> url("https://opensource.org/licenses/ISC")
+ThisBuild / versionScheme      := Some("semver-spec")
 ThisBuild / evictionErrorLevel := Level.Warn
 
 publish / skip := true
@@ -7,8 +7,8 @@ publish / skip := true
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file("."))
   .settings(
     name         := "cross-platform",
-    version      := "0.0.10",
-    scalaVersion := "3.5.2",
+    version      := "0.0.11",
+    scalaVersion := "3.6.4",
     scalacOptions ++=
       Seq(
         "-deprecation",
@@ -20,8 +20,6 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
         "-language:dynamics",
       ),
     organization           := "io.github.edadma",
-    githubOwner            := "edadma",
-    githubRepository       := name.value,
     publishMavenStyle      := true,
     Test / publishArtifact := false,
     licenses += "ISC"      -> url("https://opensource.org/licenses/ISC"),
