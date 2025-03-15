@@ -5,7 +5,7 @@ ThisBuild / scalaVersion           := "3.6.4"
 ThisBuild / organization           := "io.github.edadma"
 ThisBuild / organizationName       := "edadma"
 ThisBuild / organizationHomepage   := Some(url("https://github.com/edadma"))
-ThisBuild / version                := "0.0.1"
+ThisBuild / version                := "0.0.2"
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 ThisBuild / sonatypeRepository     := "https://s01.oss.sonatype.org/service/local"
 
@@ -67,6 +67,7 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
   ).jvmSettings(
     libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.1.0" % "provided",
   ).nativeSettings(
+    libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.1.0" % "provided",
   ).jsSettings(
     jsEnv := new org.scalajs.jsenv.nodejs.NodeJSEnv(),
 //    Test / scalaJSUseMainModuleInitializer := true,
@@ -74,4 +75,11 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
     Test / scalaJSUseMainModuleInitializer := false,
     Test / scalaJSUseTestModuleInitializer := true,
     scalaJSUseMainModuleInitializer        := true,
+  )
+
+lazy val root = project.in(file("."))
+  .aggregate(cross_platform.js, cross_platform.jvm, cross_platform.native)
+  .settings(
+    publish / skip := true,
+    publishLocal / skip := true,
   )
