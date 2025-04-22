@@ -9,7 +9,11 @@ def nameSeparator: String = FileSystems.getDefault.getSeparator
 
 def readFile(file: String): String = Files.readString(Paths.get(file))
 
-def writeFile(file: String, data: String): Unit = Files.writeString(Paths.get(file), data, StandardOpenOption.CREATE,  StandardOpenOption.TRUNCATE_EXISTING)
+def writeFile(file: String, data: String): Unit =
+  Files.writeString(Paths.get(file), data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
+
+def appendFile(file: String, data: String): Unit =
+  Files.writeString(Paths.get(file), data, StandardOpenOption.CREATE, StandardOpenOption.APPEND)
 
 def readableFile(file: String): Boolean = {
   val path = Paths.get(file)

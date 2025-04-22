@@ -18,6 +18,8 @@ def readFile(file: String): String = fs.readFileSync(file).toString
 
 def writeFile(file: String, data: String): Unit = fs.writeFileSync(file, data)
 
+def appendFile(file: String, data: String): Unit = fs.appendFileSync(file, data)
+
 def readableFile(file: String): Boolean =
   try {
     fs.accessSync(file, fs.constants.R_OK)

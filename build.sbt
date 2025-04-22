@@ -1,11 +1,11 @@
-ThisBuild / licenses += "ISC"  -> url("https://opensource.org/licenses/ISC")
-ThisBuild / versionScheme      := Some("semver-spec")
-ThisBuild / evictionErrorLevel := Level.Warn
+ThisBuild / licenses += "ISC"      -> url("https://opensource.org/licenses/ISC")
+ThisBuild / versionScheme          := Some("semver-spec")
+ThisBuild / evictionErrorLevel     := Level.Warn
 ThisBuild / scalaVersion           := "3.6.4"
 ThisBuild / organization           := "io.github.edadma"
 ThisBuild / organizationName       := "edadma"
 ThisBuild / organizationHomepage   := Some(url("https://github.com/edadma"))
-ThisBuild / version                := "0.0.2"
+ThisBuild / version                := "0.0.3"
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 ThisBuild / sonatypeRepository     := "https://s01.oss.sonatype.org/service/local"
 
@@ -60,7 +60,7 @@ lazy val commonSettings = Seq(
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file("."))
   .settings(commonSettings)
   .settings(
-    name         := "cross-platform",
+    name                   := "cross-platform",
     publishMavenStyle      := true,
     Test / publishArtifact := false,
     licenses += "ISC"      -> url("https://opensource.org/licenses/ISC"),
@@ -80,6 +80,6 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
 lazy val root = project.in(file("."))
   .aggregate(cross_platform.js, cross_platform.jvm, cross_platform.native)
   .settings(
-    publish / skip := true,
+    publish / skip      := true,
     publishLocal / skip := true,
   )

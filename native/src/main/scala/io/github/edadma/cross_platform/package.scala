@@ -1,9 +1,8 @@
 package io.github.edadma.cross_platform
 
 import java.io.FileWriter
-import java.nio.file.{Files, Paths}
-
-import scala.jdk.CollectionConverters._
+import java.nio.file.{Files, Paths, StandardOpenOption}
+import scala.jdk.CollectionConverters.*
 
 def processArgs(a: Seq[String]): IndexedSeq[String] = a.toIndexedSeq
 
@@ -17,6 +16,9 @@ def writeFile(file: String, data: String): Unit = {
   f.write(data)
   f.close()
 }
+
+def appendFile(file: String, data: String): Unit =
+  Files.writeString(Paths.get(file), data, StandardOpenOption.CREATE, StandardOpenOption.APPEND)
 
 def readableFile(file: String): Boolean = {
   val path = Paths.get(file)
