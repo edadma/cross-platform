@@ -80,6 +80,7 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).
 lazy val root = project.in(file("."))
   .aggregate(cross_platform.js, cross_platform.jvm, cross_platform.native)
   .settings(
+    name                := "cross-platform",
     publish / skip      := true,
     publishLocal / skip := true,
   )
