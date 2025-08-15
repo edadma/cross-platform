@@ -4,7 +4,7 @@ import scala.scalajs.js
 import scala.scalajs.js.DynamicImplicits.*
 
 def processArgs(a: Seq[String]): IndexedSeq[String] =
-  g.process.argv.asInstanceOf[js.Array[String]] drop 2 toIndexedSeq
+  js.Dynamic.global.process.argv.asInstanceOf[js.Array[String]] drop 2 toIndexedSeq
 
 private val process = js.Dynamic.global.process
 
@@ -18,27 +18,20 @@ def writeFile(file: String, data: String): Unit = NodeFS.writeFileSync(file, dat
 
 def appendFile(file: String, data: String): Unit = NodeFS.appendFileSync(file, data)
 
-def readableFile(file: String): Boolean =
-  try {
-    NodeFS.accessSync(file, fs.constants.R_OK)
-    true
-  } catch {
-    case _: Exception => false
-  }
+def readableFile(file: String): Boolean = {
+  NodeFS.accessSync(file, NodeFS.constants.R_OK)
+  true
+}
 
 def listFiles(directory: String): Seq[String] = {
-  if (js.Dynamic.global.require != js.undefined) {
-    if (fs.existsSync(directory)) {
-      NodeFS.readdirSync(directory)
-        .asInstanceOf[js.Array[String]]
-        .map(file => path.resolve(directory, file).toString)
-        .sort()
-        .toList
-    } else {
-      throw new IllegalArgumentException(s"$directory is not a directory or does not exist")
-    }
+  if (NodeFS.existsSync(directory)) {
+    NodeFS.readdirSync(directory)
+      .asInstanceOf[js.Array[String]]
+      .map(file => NodePath.resolve(directory, file).toString)
+      .sort()
+      .toList
   } else {
-    throw new UnsupportedOperationException("File system access is only available in Node.js")
+    throw new IllegalArgumentException(s"$directory is not a directory or does not exist")
   }
 }
 
@@ -49,86 +42,70 @@ def processExit(code: Int): Nothing =
   throw new RuntimeException("Unreachable code after process.exit")
 
 def exists(path: String): Boolean =
-  fs.existsSync(path).asInstanceOf[Boolean]
+  NodeFS.existsSync(path)
 
 def isFile(path: String): Boolean = {
-  if (!fs.existsSync(path).asInstanceOf[Boolean]) false
+  if (!NodeFS.existsSync(path)) false
   else {
-    val stats = fs.statSync(path)
-    stats.isFile().asInstanceOf[Boolean]
+    val stats = NodeFS.statSync(path)
+    stats.isFile()
   }
 }
 
 def isDirectory(path: String): Boolean = {
-  if (!fs.existsSync(path).asInstanceOf[Boolean]) false
+  if (!NodeFS.existsSync(path)) false
   else {
-    val stats = fs.statSync(path)
-    stats.isDirectory().asInstanceOf[Boolean]
+    val stats = NodeFS.statSync(path)
+    stats.isDirectory()
   }
 }
 
 def isSymbolicLink(path: String): Boolean = {
-  if (!fs.existsSync(path).asInstanceOf[Boolean]) false
+  if (!NodeFS.existsSync(path)) false
   else {
-    val stats = fs.lstatSync(path) // Use lstat to get symlink info
-    stats.isSymbolicLink().asInstanceOf[Boolean]
+    val stats = NodeFS.lstatSync(path) // Use lstat to get symlink info
+    stats.isSymbolicLink()
   }
 }
 
 def isReadable(path: String): Boolean = {
-  try {
-    fs.accessSync(path, fs.constants.R_OK)
-    true
-  } catch {
-    case _: Exception => false
-  }
+  NodeFS.accessSync(path, NodeFS.constants.R_OK)
+  true
 }
 
 def isWritable(path: String): Boolean = {
-  try {
-    fs.accessSync(path, fs.constants.W_OK)
-    true
-  } catch {
-    case _: Exception => false
-  }
+  NodeFS.accessSync(path, NodeFS.constants.W_OK)
+  true
 }
 
 def isExecutable(path: String): Boolean = {
-  try {
-    fs.accessSync(path, fs.constants.X_OK)
-    true
-  } catch {
-    case _: Exception => false
-  }
+  NodeFS.accessSync(path, NodeFS.constants.X_OK)
+  true
 }
 
 def isSameFile(path1: String, path2: String): Boolean = {
   if (!exists(path1) || !exists(path2)) false
   else {
-    try {
-      val stats1 = fs.statSync(path1)
-      val stats2 = fs.statSync(path2)
+    val stats1 = NodeFS.statSync(path1)
+    val stats2 = NodeFS.statSync(path2)
 
-      // Compare device and inode numbers (Unix-like) or use other unique identifiers
-      val dev1 = stats1.dev.asInstanceOf[Double]
-      val ino1 = stats1.ino.asInstanceOf[Double]
-      val dev2 = stats2.dev.asInstanceOf[Double]
-      val ino2 = stats2.ino.asInstanceOf[Double]
+    // Compare device and inode numbers (Unix-like) or use other unique identifiers
+    val dev1 = stats1.dev
+    val ino1 = stats1.ino
+    val dev2 = stats2.dev
+    val ino2 = stats2.ino
 
-      dev1 == dev2 && ino1 == ino2
-    } catch {
-      case _: Exception => false
-    }
+    dev1 == dev2 && ino1 == ino2
   }
 }
 
 def readBytes(path: String): Array[Byte] = {
   // Read as Buffer and convert to Array manually
-  val buffer = fs.readFileSync(path)
-  val length = buffer.length.asInstanceOf[Int]
+  val buffer = NodeFS.readFileSync(path)
+  val length = buffer.asInstanceOf[js.Dynamic].length.asInstanceOf[Int]
   val array  = new Array[Byte](length)
   for (i <- 0 until length) {
-    array(i) = buffer.selectDynamic(i.toString).asInstanceOf[Int].toByte
+    array(i) = buffer.asInstanceOf[js.Dynamic].selectDynamic(i.toString).asInstanceOf[Int].toByte
   }
   array
 }
@@ -136,53 +113,53 @@ def readBytes(path: String): Array[Byte] = {
 def writeBytes(path: String, data: Array[Byte]): Unit = {
   // Convert Array[Byte] to Node.js Buffer
   val jsArray = js.Array(data.map(_ & 0xff)*)
-  val buffer  = js.Dynamic.global.Buffer.from(jsArray)
-  fs.writeFileSync(path, buffer)
+  val buffer  = NodeBuffer.from(jsArray)
+  NodeFS.writeFileSync(path, buffer)
 }
 
 def listDirectoryWithTypes(path: String): Vector[DirectoryEntry] = {
-  if (!fs.existsSync(path).asInstanceOf[Boolean]) {
+  if (!NodeFS.existsSync(path)) {
     throw new IllegalArgumentException(s"Path does not exist: $path")
   }
 
-  val files = fs.readdirSync(path).asInstanceOf[js.Array[String]]
+  val files = NodeFS.readdirSync(path)
   files.toVector.map { name =>
-    val fullPath = g.require("path").join(path, name).toString
-    val stats    = fs.lstatSync(fullPath) // Use lstat to detect symlinks properly
-    val fileType = if (stats.isSymbolicLink().asInstanceOf[Boolean]) FileType.SymbolicLink
-    else if (stats.isDirectory().asInstanceOf[Boolean]) FileType.Directory
-    else if (stats.isFile().asInstanceOf[Boolean]) FileType.File
+    val fullPath = NodePath.join(path, name)
+    val stats    = NodeFS.lstatSync(fullPath) // Use lstat to detect symlinks properly
+    val fileType = if (stats.isSymbolicLink()) FileType.SymbolicLink
+    else if (stats.isDirectory()) FileType.Directory
+    else if (stats.isFile()) FileType.File
     else FileType.Other
     DirectoryEntry(name, fileType)
   }
 }
 
 def createDirectory(path: String): Unit =
-  fs.mkdirSync(path)
+  NodeFS.mkdirSync(path)
 
 def createDirectories(path: String): Unit =
-  fs.mkdirSync(path, js.Dynamic.literal(recursive = true))
+  NodeFS.mkdirSync(path, js.Dynamic.literal(recursive = true))
 
 def deleteFile(path: String): Unit = {
   if (isDirectory(path)) {
-    fs.rmdirSync(path)
+    NodeFS.rmdirSync(path)
   } else {
-    fs.unlinkSync(path)
+    NodeFS.unlinkSync(path)
   }
 }
 
 def copyFile(source: String, target: String): Unit =
-  fs.copyFileSync(source, target)
+  NodeFS.copyFileSync(source, target)
 
 def moveFile(source: String, target: String): Unit =
-  fs.renameSync(source, target)
+  NodeFS.renameSync(source, target)
 
 def fileSize(path: String): Long = {
-  val stats = fs.statSync(path)
-  stats.size.asInstanceOf[Double].toLong
+  val stats = NodeFS.statSync(path)
+  stats.size.toLong
 }
 
 def lastModified(path: String): Long = {
-  val stats = fs.statSync(path)
-  stats.mtime.getTime().asInstanceOf[Double].toLong
+  val stats = NodeFS.statSync(path)
+  stats.mtime.getTime().toLong
 }

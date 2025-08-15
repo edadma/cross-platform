@@ -8,4 +8,5 @@ import scala.scalajs.js.annotation._
 object NodePath extends js.Object {
   val sep: String                     = js.native
   def resolve(paths: String*): String = js.native
+  def join(paths: String*): String    = js.native
 }

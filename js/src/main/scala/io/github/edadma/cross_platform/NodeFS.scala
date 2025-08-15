@@ -3,14 +3,60 @@ package io.github.edadma.cross_platform
 import scala.scalajs.js
 import scala.scalajs.js.annotation._
 
-// Define a facade for the fs module
 @js.native
 @JSImport("fs", JSImport.Namespace)
 object NodeFS extends js.Object {
+  // String/text operations
   def readFileSync(path: String): String                 = js.native
   def appendFileSync(path: String, data: String): String = js.native
   def writeFileSync(path: String, data: String): Unit    = js.native
-  def existsSync(path: String): Boolean                  = js.native
-  def accessSync(path: String, mode: Int): Unit          = js.native
-  def readdirSync(path: String): js.Array[String]        = js.native
+
+  // Buffer/binary operations
+//  def readFileSync(path: String): js.Any              = js.native // Returns Buffer
+  def writeFileSync(path: String, data: js.Any): Unit = js.native // Accepts Buffer
+
+  // File system queries
+  def existsSync(path: String): Boolean           = js.native
+  def accessSync(path: String, mode: Int): Unit   = js.native
+  def readdirSync(path: String): js.Array[String] = js.native
+
+  // File stats
+  def statSync(path: String): NodeStats  = js.native
+  def lstatSync(path: String): NodeStats = js.native
+
+  // Directory operations
+  def mkdirSync(path: String): Unit                  = js.native
+  def mkdirSync(path: String, options: js.Any): Unit = js.native
+  def rmdirSync(path: String): Unit                  = js.native
+
+  // File operations
+  def unlinkSync(path: String): Unit                     = js.native
+  def copyFileSync(source: String, target: String): Unit = js.native
+  def renameSync(source: String, target: String): Unit   = js.native
+
+  // Constants
+  val constants: NodeFSConstants = js.native
+}
+
+@js.native
+trait NodeFSConstants extends js.Object {
+  val R_OK: Int = js.native
+  val W_OK: Int = js.native
+  val X_OK: Int = js.native
+}
+
+@js.native
+trait NodeStats extends js.Object {
+  def isFile(): Boolean         = js.native
+  def isDirectory(): Boolean    = js.native
+  def isSymbolicLink(): Boolean = js.native
+  val dev: Double               = js.native
+  val ino: Double               = js.native
+  val size: Double              = js.native
+  val mtime: NodeDate           = js.native
+}
+
+@js.native
+trait NodeDate extends js.Object {
+  def getTime(): Double = js.native
 }
