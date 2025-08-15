@@ -3,28 +3,24 @@ package io.github.edadma.cross_platform
 import scala.scalajs.js
 import scala.scalajs.js.DynamicImplicits.*
 
-import js.Dynamic.{global => g}
-
 def processArgs(a: Seq[String]): IndexedSeq[String] =
   g.process.argv.asInstanceOf[js.Array[String]] drop 2 toIndexedSeq
 
-private val fs      = g.require("fs")
-private val path    = g.require("path")
 private val process = js.Dynamic.global.process
 
-def nameSeparator: String = path.sep.toString
+def nameSeparator: String = NodePath.sep
 
 def getCurrentDirectory: String = process.cwd().toString
 
-def readFile(file: String): String = fs.readFileSync(file).toString
+def readFile(file: String): String = NodeFS.readFileSync(file)
 
-def writeFile(file: String, data: String): Unit = fs.writeFileSync(file, data)
+def writeFile(file: String, data: String): Unit = NodeFS.writeFileSync(file, data)
 
-def appendFile(file: String, data: String): Unit = fs.appendFileSync(file, data)
+def appendFile(file: String, data: String): Unit = NodeFS.appendFileSync(file, data)
 
 def readableFile(file: String): Boolean =
   try {
-    fs.accessSync(file, fs.constants.R_OK)
+    NodeFS.accessSync(file, fs.constants.R_OK)
     true
   } catch {
     case _: Exception => false
