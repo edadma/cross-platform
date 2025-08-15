@@ -1,13 +1,15 @@
 package io.github.edadma.cross_platform
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation._
+import scala.scalajs.js.annotation.*
+import scala.scalajs.js.typedarray.Uint8Array
 
 @js.native
 @JSImport("fs", JSImport.Namespace)
 object NodeFS extends js.Object {
   // String/text operations
   def readFileSync(path: String, enc: String): String    = js.native
+  def readFileSync(path: String): Uint8Array             = js.native
   def appendFileSync(path: String, data: String): String = js.native
   def writeFileSync(path: String, data: String): Unit    = js.native
 
