@@ -12,7 +12,7 @@ def nameSeparator: String = NodePath.sep
 
 def getCurrentDirectory: String = process.cwd().toString
 
-def readFile(file: String): String = NodeFS.readFileSync(file)
+def readFile(file: String): String = NodeFS.readFileSync(file, "utf8")
 
 def writeFile(file: String, data: String): Unit = NodeFS.writeFileSync(file, data)
 
