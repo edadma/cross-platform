@@ -60,8 +60,7 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   ).nativeSettings(
     libraryDependencies += "org.scala-js" %% "scalajs-stubs" % "1.1.0" % "provided",
   ).jsSettings(
-    jsEnv := new org.scalajs.jsenv.nodejs.NodeJSEnv(org.scalajs.jsenv.nodejs.NodeJSEnv.Config()
-      .withArgs(List("--input-type=module"))),
+    jsEnv := new org.scalajs.jsenv.nodejs.NodeJSEnv(),
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
     //  scalaJSLinkerConfig ~= { _.withModuleSplitStyle(ModuleSplitStyle.SmallestModules) },
     scalaJSLinkerConfig ~= { _.withSourceMap(false) },
