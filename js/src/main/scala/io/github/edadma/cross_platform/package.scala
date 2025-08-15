@@ -32,12 +32,10 @@ def readableFile(file: String): Boolean =
 
 def listFiles(directory: String): Seq[String] = {
   if (js.Dynamic.global.require != js.undefined) {
-    val dirPath = path.resolve(directory)
-
-    if (fs.existsSync(dirPath)) {
-      fs.readdirSync(dirPath)
+    if (fs.existsSync(directory)) {
+      NodeFS.readdirSync(directory)
         .asInstanceOf[js.Array[String]]
-        .map(file => path.resolve(dirPath, file).toString)
+        .map(file => path.resolve(directory, file).toString)
         .sort()
         .toList
     } else {
