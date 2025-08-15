@@ -72,21 +72,21 @@ def isDirectory(path: String): Boolean = {
 }
 
 def readBytes(path: String): Array[Byte] = {
-  val buffer     = fs.readFileSync(path)
-  val uint8Array = js.Dynamic.newInstance(js.Dynamic.global.Uint8Array)(buffer)
-  val array      = new Array[Byte](uint8Array.length.asInstanceOf[Int])
-  for (i <- array.indices) {
-    array(i) = uint8Array.selectDynamic(i.toString).asInstanceOf[Int].toByte
+  // Read as Buffer and convert to Array manually
+  val buffer = fs.readFileSync(path)
+  val length = buffer.length.asInstanceOf[Int]
+  val array  = new Array[Byte](length)
+  for (i <- 0 until length) {
+    array(i) = buffer.selectDynamic(i.toString).asInstanceOf[Int].toByte
   }
   array
 }
 
 def writeBytes(path: String, data: Array[Byte]): Unit = {
-  val uint8Array = js.Dynamic.newInstance(js.Dynamic.global.Uint8Array)(data.length)
-  for (i <- data.indices) {
-    uint8Array.update(i, data(i) & 0xff)
-  }
-  fs.writeFileSync(path, uint8Array)
+  // Convert Array[Byte] to Node.js Buffer
+  val jsArray = js.Array(data.map(_ & 0xff)*)
+  val buffer  = js.Dynamic.global.Buffer.from(jsArray)
+  fs.writeFileSync(path, buffer)
 }
 
 def listDirectoryWithTypes(path: String): Vector[DirectoryEntry] = {

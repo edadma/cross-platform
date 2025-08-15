@@ -1,11 +1,11 @@
-ThisBuild / licenses += "ISC"      -> url("https://opensource.org/licenses/ISC")
+ThisBuild / licenses               := Seq("ISC" -> url("https://opensource.org/licenses/ISC"))
 ThisBuild / versionScheme          := Some("semver-spec")
 ThisBuild / evictionErrorLevel     := Level.Warn
-ThisBuild / scalaVersion           := "3.7.1"
+ThisBuild / scalaVersion           := "3.7.2"
 ThisBuild / organization           := "io.github.edadma"
 ThisBuild / organizationName       := "edadma"
 ThisBuild / organizationHomepage   := Some(url("https://github.com/edadma"))
-ThisBuild / version                := "0.0.7"
+ThisBuild / version                := "0.0.13"
 ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
 
 ThisBuild / publishConfiguration := publishConfiguration.value.withOverwrite(true).withChecksums(Vector.empty)
@@ -38,7 +38,8 @@ ThisBuild / publishTo := {
   else localStaging.value
 }
 
-lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform).in(file("."))
+lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .in(file("."))
   .settings(
     name := "cross-platform",
     scalacOptions ++=
