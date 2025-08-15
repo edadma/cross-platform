@@ -5,7 +5,7 @@ ThisBuild / scalaVersion           := "3.7.2"
 ThisBuild / organization           := "io.github.edadma"
 ThisBuild / organizationName       := "edadma"
 ThisBuild / organizationHomepage   := Some(url("https://github.com/edadma"))
-ThisBuild / version                := "0.0.13"
+ThisBuild / version                := "0.0.14"
 ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
 
 ThisBuild / publishConfiguration := publishConfiguration.value.withOverwrite(true).withChecksums(Vector.empty)
@@ -17,8 +17,8 @@ ThisBuild / sonatypeProfileName := "io.github.edadma"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
-    url("https://github.com/edadma/cross-platform"),
-    "scm:git@github.com:edadma/cross-platform.git",
+    url("https://github.com/edadma/cross_platform"),
+    "scm:git@github.com:edadma/cross_platform.git",
   ),
 )
 ThisBuild / developers := List(
@@ -30,7 +30,7 @@ ThisBuild / developers := List(
   ),
 )
 
-ThisBuild / homepage := Some(url("https://github.com/edadma/cross-platform"))
+ThisBuild / homepage := Some(url("https://github.com/edadma/cross_platform"))
 
 ThisBuild / publishTo := {
   val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
@@ -41,7 +41,7 @@ ThisBuild / publishTo := {
 lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("."))
   .settings(
-    name := "cross-platform",
+    name := "cross_platform",
     scalacOptions ++=
       Seq(
         "-deprecation",
@@ -74,7 +74,7 @@ lazy val cross_platform = crossProject(JSPlatform, JVMPlatform, NativePlatform)
 lazy val root = project.in(file("."))
   .aggregate(cross_platform.js, cross_platform.jvm, cross_platform.native)
   .settings(
-    name                := "cross-platform",
+    name                := "cross_platform",
     publish / skip      := true,
     publishLocal / skip := true,
   )

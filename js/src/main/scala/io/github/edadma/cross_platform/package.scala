@@ -14,6 +14,8 @@ private val process = js.Dynamic.global.process
 
 def nameSeparator: String = path.sep.toString
 
+def getCurrentDirectory: String = process.cwd().toString
+
 def readFile(file: String): String = fs.readFileSync(file).toString
 
 def writeFile(file: String, data: String): Unit = fs.writeFileSync(file, data)
@@ -71,6 +73,61 @@ def isDirectory(path: String): Boolean = {
   }
 }
 
+def isSymbolicLink(path: String): Boolean = {
+  if (!fs.existsSync(path).asInstanceOf[Boolean]) false
+  else {
+    val stats = fs.lstatSync(path) // Use lstat to get symlink info
+    stats.isSymbolicLink().asInstanceOf[Boolean]
+  }
+}
+
+def isReadable(path: String): Boolean = {
+  try {
+    fs.accessSync(path, fs.constants.R_OK)
+    true
+  } catch {
+    case _: Exception => false
+  }
+}
+
+def isWritable(path: String): Boolean = {
+  try {
+    fs.accessSync(path, fs.constants.W_OK)
+    true
+  } catch {
+    case _: Exception => false
+  }
+}
+
+def isExecutable(path: String): Boolean = {
+  try {
+    fs.accessSync(path, fs.constants.X_OK)
+    true
+  } catch {
+    case _: Exception => false
+  }
+}
+
+def isSameFile(path1: String, path2: String): Boolean = {
+  if (!exists(path1) || !exists(path2)) false
+  else {
+    try {
+      val stats1 = fs.statSync(path1)
+      val stats2 = fs.statSync(path2)
+
+      // Compare device and inode numbers (Unix-like) or use other unique identifiers
+      val dev1 = stats1.dev.asInstanceOf[Double]
+      val ino1 = stats1.ino.asInstanceOf[Double]
+      val dev2 = stats2.dev.asInstanceOf[Double]
+      val ino2 = stats2.ino.asInstanceOf[Double]
+
+      dev1 == dev2 && ino1 == ino2
+    } catch {
+      case _: Exception => false
+    }
+  }
+}
+
 def readBytes(path: String): Array[Byte] = {
   // Read as Buffer and convert to Array manually
   val buffer = fs.readFileSync(path)
@@ -97,9 +154,9 @@ def listDirectoryWithTypes(path: String): Vector[DirectoryEntry] = {
   val files = fs.readdirSync(path).asInstanceOf[js.Array[String]]
   files.toVector.map { name =>
     val fullPath = g.require("path").join(path, name).toString
-    val stats    = fs.statSync(fullPath)
-    val fileType = if (stats.isDirectory().asInstanceOf[Boolean]) FileType.Directory
-    else if (stats.isSymbolicLink().asInstanceOf[Boolean]) FileType.SymbolicLink
+    val stats    = fs.lstatSync(fullPath) // Use lstat to detect symlinks properly
+    val fileType = if (stats.isSymbolicLink().asInstanceOf[Boolean]) FileType.SymbolicLink
+    else if (stats.isDirectory().asInstanceOf[Boolean]) FileType.Directory
     else if (stats.isFile().asInstanceOf[Boolean]) FileType.File
     else FileType.Other
     DirectoryEntry(name, fileType)

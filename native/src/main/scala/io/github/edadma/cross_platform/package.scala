@@ -8,6 +8,8 @@ def processArgs(a: Seq[String]): IndexedSeq[String] = a.toIndexedSeq
 
 def nameSeparator: String = System.getProperty("file.separator")
 
+def getCurrentDirectory: String = System.getProperty("user.dir")
+
 def readFile(file: String): String = Files.readString(Paths.get(file))
 
 def writeFile(file: String, data: String): Unit = {
@@ -53,6 +55,28 @@ def isFile(path: String): Boolean =
 def isDirectory(path: String): Boolean =
   Files.isDirectory(Paths.get(path))
 
+def isSymbolicLink(path: String): Boolean =
+  Files.isSymbolicLink(Paths.get(path))
+
+def isReadable(path: String): Boolean =
+  Files.isReadable(Paths.get(path))
+
+def isWritable(path: String): Boolean =
+  Files.isWritable(Paths.get(path))
+
+def isExecutable(path: String): Boolean =
+  Files.isExecutable(Paths.get(path))
+
+def isSameFile(path1: String, path2: String): Boolean = {
+  val p1 = Paths.get(path1)
+  val p2 = Paths.get(path2)
+  if (Files.exists(p1) && Files.exists(p2)) {
+    Files.isSameFile(p1, p2)
+  } else {
+    false
+  }
+}
+
 def readBytes(path: String): Array[Byte] =
   Files.readAllBytes(Paths.get(path))
 
@@ -66,7 +90,7 @@ def listDirectoryWithTypes(path: String): Vector[DirectoryEntry] = {
   }
 
   Files.list(javaPath).iterator().asScala.toVector.map { entry =>
-    val name = entry.getFileName.toString
+    val name     = entry.getFileName.toString
     val fileType = if (Files.isDirectory(entry)) FileType.Directory
     else if (Files.isSymbolicLink(entry)) FileType.SymbolicLink
     else if (Files.isRegularFile(entry)) FileType.File
