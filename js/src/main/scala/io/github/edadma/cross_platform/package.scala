@@ -2,6 +2,8 @@ package io.github.edadma.cross_platform
 
 import scala.scalajs.js
 import scala.scalajs.js.DynamicImplicits.*
+import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.typedarray.Uint8Array
 
 def processArgs(a: Seq[String]): IndexedSeq[String] =
   js.Dynamic.global.process.argv.asInstanceOf[js.Array[String]] drop 2 toIndexedSeq
@@ -163,3 +165,72 @@ def lastModified(path: String): Long = {
   val stats = NodeFS.statSync(path)
   stats.mtime.getTime().toLong
 }
+
+@js.native
+@JSImport("fs", JSImport.Namespace)
+object fs extends js.Object:
+  def openSync(path: String, flags: String): Int = js.native
+  def readSync(fd: Int, buffer: Uint8Array, offset: Int, length: Int, position: js.UndefOr[Int] = js.undefined): Int =
+    js.native
+  def closeSync(fd: Int): Unit = js.native
+
+@js.native
+@JSImport("util", "TextDecoder")
+class TextDecoder(encoding: String = "utf-8", options: js.UndefOr[js.Object] = js.undefined) extends js.Object:
+  def decode(input: js.UndefOr[Uint8Array] = js.undefined, options: js.UndefOr[js.Object] = js.undefined): String =
+    js.native
+
+def readLine(prompt: String = ""): String =
+  // write prompt
+  js.Dynamic.global.process.stdout.write(prompt)
+
+  // open controlling terminal
+  val isWin   = js.Dynamic.global.process.platform.asInstanceOf[String] == "win32"
+  val ttyPath = if isWin then "CONIN$" else "/dev/tty"
+
+  // Try to open TTY; if that fails (rare), fall back to fd=0 (stdin)
+  val fd: Int =
+    try fs.openSync(ttyPath, "rs")
+    catch case _: Throwable => 0 // stdin
+
+  val needClose = fd != 0 // don't close real stdin
+  val decoder   = new TextDecoder("utf-8")
+  val buf       = new Uint8Array(1024)
+  val sb        = new StringBuilder
+
+  var done = false
+  while !done do
+    val n = fs.readSync(fd, buf, 0, buf.length)
+    if n <= 0 then
+      // EOF before newline: finish whatever we decoded so far
+      val tail = decoder.decode()
+      if tail.nonEmpty then sb.append(tail)
+      done = true
+    else
+      // scan for newline among the bytes we got
+      var nlIdx = -1
+      var i     = 0
+      while i < n && nlIdx == -1 do
+        if buf(i) == 0x0a then nlIdx = i // '\n'
+        i += 1
+
+      if nlIdx >= 0 then
+        // Handle optional '\r' before '\n'
+        val endExclusive = if nlIdx > 0 && buf(nlIdx - 1) == 0x0d then nlIdx - 1 else nlIdx
+        val slice        = buf.subarray(0, endExclusive)
+        // Final chunk: stream=false to flush decoder
+        val part = decoder.decode(slice, js.Dynamic.literal(stream = false).asInstanceOf[js.Object])
+        if part.nonEmpty then sb.append(part)
+        done = true
+      else
+        // No newline yet: stream this chunk
+        val slice = buf.subarray(0, n)
+        val part  = decoder.decode(slice, js.Dynamic.literal(stream = true).asInstanceOf[js.Object])
+        if part.nonEmpty then sb.append(part)
+
+  if needClose then
+    try fs.closeSync(fd)
+    catch case _: Throwable => ()
+
+  sb.result()
+end readLine

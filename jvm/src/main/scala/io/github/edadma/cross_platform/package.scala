@@ -1,6 +1,8 @@
 package io.github.edadma.cross_platform
 
 import java.nio.file.{FileSystems, Files, Paths, StandardCopyOption, StandardOpenOption}
+import scala.Console.out
+import scala.io.StdIn
 import scala.jdk.CollectionConverters.*
 
 def processArgs(a: Seq[String]): IndexedSeq[String] = a.toIndexedSeq
@@ -114,3 +116,8 @@ def fileSize(path: String): Long =
 
 def lastModified(path: String): Long =
   Files.getLastModifiedTime(Paths.get(path)).toMillis
+
+def readLine(prompt: String = ""): String =
+  print(prompt)
+  out.flush()
+  StdIn.readLine
